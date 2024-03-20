@@ -109,7 +109,7 @@ const myCreateMint = async (
 
 
 const createMetadata = async(mint: PublicKey, name: string, symbol: string, imgName: string, description: string, mintAuthority: PublicKey, updateAuthority: PublicKey) => {
-    console.log(`Creating metadata with mint ${mint}`);
+    console.log(`Creating metadata with mint: ${mint}`);
 
     const metaplex = Metaplex.make(connection)
         .use(keypairIdentity(WALLET))
@@ -193,7 +193,7 @@ const createMetadata = async(mint: PublicKey, name: string, symbol: string, imgN
 
 
 const mintToken = async (mint: PublicKey, mintAuthority: any, mintAmount: bigint, decimals: number) => {
-    console.log(`Minting tokens with mint ${mint} amount ${mintAmount}`);
+    console.log(`Minting tokens with mint: ${mint} amount: ${mintAmount}`);
 
     const tokenAccount = await getOrCreateAssociatedTokenAccount(
         connection,
@@ -221,7 +221,7 @@ const mintToken = async (mint: PublicKey, mintAuthority: any, mintAmount: bigint
 
 
 const createOpenBookMarket = async (mint: PublicKey, decimals: number, minOrderSize: number, tickSize: number) => {
-    console.log(`Creating OpenBookMarket with mint ${mint}`);
+    console.log(`Creating OpenBookMarket with mint: ${mint}`);
 
     const baseToken = new Token(TOKEN_PROGRAM_ID, mint, decimals);
     const quoteToken = DEFAULT_TOKEN.WSOL;
