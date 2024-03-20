@@ -1,5 +1,5 @@
 {
-    "name": "solana-reflection-token",
+    "name": "spl-token-deployer",
     "version": "1.0.0",
     "private": true,
     "scripts": {
