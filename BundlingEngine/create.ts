@@ -221,7 +221,7 @@ const mintToken = async (mint: PublicKey, mintAuthority: any, mintAmount: bigint
 
 
 const createOpenBookMarket = async (mint: PublicKey, decimals: number, minOrderSize: number, tickSize: number) => {
-    console.log(`Creating OpenBookMarket with mint: ${mint}`);
+    console.log(`Creating OpenBook market with mint: ${mint}`);
 
     const baseToken = new Token(TOKEN_PROGRAM_ID, mint, decimals);
     const quoteToken = DEFAULT_TOKEN.WSOL;
@@ -239,11 +239,11 @@ const createOpenBookMarket = async (mint: PublicKey, decimals: number, minOrderS
 
     const createSigs = await myBuildSendAndConfirmTxs(innerTransactions);
     if (createSigs.length === 0) {
-        console.error("  Failed to create OpenBookMarket");
+        console.error("  Failed to create OpenBook market");
         return null;
     }
 
-    console.log('  Created OpenBookMarket:', createSigs);
+    console.log('  Created OpenBook market:', createSigs);
     return address.marketId;
 };
 
@@ -281,12 +281,17 @@ export const createToken = async (
     }
     await sleep(3000);
 
-    /* Step 4 - Create OpenBookMarket */
-    const marketId = await createOpenBookMarket(mint, decimals, 1, 0.000001);
-    if (!marketId) {
+    /* Step 4 - Create OpenBook market */
+    try {
+        const marketId = await createOpenBookMarket(mint, decimals, 1, 0.000001);
+        if (!marketId) {
+            return null;
+        }
+        console.log("  Market ID:", marketId.toBase58());
+    } catch (err) {
+        console.error("  Failed to create OpenBook market, error:", err);
         return null;
     }
-    console.log("  Market ID:", marketId.toBase58());
 
     /* Last Step - Revoke mint authority */
     console.log("Disabling mint authority with mint:", mint.toBase58());
@@ -316,7 +321,7 @@ export const createPool = async(mint: PublicKey, decimals: number, tokenAmount: 
 
     const accounts = await Market.findAccountsByMints(connection, baseToken.mint, quoteToken.mint, PROGRAMIDS.OPENBOOK_MARKET);
     if (accounts.length === 0) {
-        console.error("  Failed to find OpenBookMarket");
+        console.error("  Failed to find OpenBook market");
         return null;
     }
     const marketId = accounts[0].publicKey;
