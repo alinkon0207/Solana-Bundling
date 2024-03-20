@@ -27,11 +27,11 @@ const main = async () => {
         return;
     }
 
-    const ammId = await createPool(tokenMint, DECIMALS, BigInt(TOTAL_SUPPLY * 8 / 10), BigInt(1));
-    if (ammId === null) {
-        return;
-    }
-    console.log("  AMM ID:", ammId?.toBase58());
+    // const ammId = await createPool(tokenMint, DECIMALS, BigInt(TOTAL_SUPPLY * 8 / 10), BigInt(1));
+    // if (ammId === null) {
+    //     return;
+    // }
+    // console.log("  AMM ID:", ammId?.toBase58());
 }
 
 main();
