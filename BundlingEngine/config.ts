@@ -21,8 +21,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const isMainNet = process.env.IS_MAINNET === "true";
-
 export const OWNER_PRIV_KEY = process.env.OWNER_PRIV_KEY || "";
+
 
 export const PROGRAMIDS = isMainNet ? MAINNET_PROGRAM_ID : DEVNET_PROGRAM_ID;
 export const NETWORK = isMainNet ? "mainnet-beta" : "devnet";
@@ -43,7 +43,6 @@ export const WALLET = Keypair.fromSecretKey(bs58.decode(OWNER_PRIV_KEY));
 export const payer = WALLET;
 export const mintAuthority = WALLET;
 export const updateAuthority = WALLET;
-export const buyerOrSeller = WALLET;
 
 export const makeTxVersion = TxVersion.V0; // LEGACY
 
