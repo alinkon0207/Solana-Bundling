@@ -13,9 +13,12 @@ import {
 
 
 export async function bull_dozer(txs: any) {
+    console.log();
+    console.log();
+    
     console.log('BLOCK_ENGINE_URL:', BLOCK_ENGINE_URL);
 
-    const bundleTransactionLimit = parseInt('5');
+    const bundleTransactionLimit = parseInt('3');
     const search = searcherClient(BLOCK_ENGINE_URL, jito_auth_keypair);
 
     await build_bundle(
