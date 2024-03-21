@@ -24,7 +24,6 @@ import {
     payer,
     makeTxVersion,
     addLookupTableInfo,
-    MAX_RETRIES,
 } from './config';
 
 
@@ -58,8 +57,9 @@ export async function getWalletTokenAccounts(connection: Connection, wallet: Pub
 //         payer: (Keypair | Signer)[], 
 //         options?: SendOptions): Promise<string> {
 //     let signatures: string[]= [];
+//     const maxRetries = 50;
 
-//     for (let retries = 0; retries < MAX_RETRIES; retries++) {
+//     for (let retries = 0; retries < maxRetries; retries++) {
 //         console.log("  retries:", retries);
 
 //         const latest = await connection.getLatestBlockhash();

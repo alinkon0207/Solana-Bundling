@@ -53,5 +53,3 @@ export const DEFAULT_TOKEN = {
         new PublicKey(isMainNet ? 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' : 'EmXq3Ni9gfudTiyNKzzYvpnQqnJEMRw2ttnVXoJXjLo1'), 
         6, isMainNet ? 'USDC' : 'USDC-DEV', isMainNet ? 'USD Coin' : 'USDC Dev'),
 };
-
-export const MAX_RETRIES = 3;
