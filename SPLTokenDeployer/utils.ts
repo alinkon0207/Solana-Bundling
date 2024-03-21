@@ -169,7 +169,8 @@ export async function mySendAndConfirmTransaction(
     return signature;
 }
 
-async function mySendAndConfirmTxs(
+
+export async function mySendAndConfirmTxs(
     connection: Connection,
     payer: Keypair | Signer,
     txs: (VersionedTransaction | Transaction)[],
@@ -187,6 +188,7 @@ async function mySendAndConfirmTxs(
     
     return txids;
 }
+
 
 export async function myBuildSendAndConfirmTxs(
     innerSimpleV0Transaction: InnerSimpleV0Transaction[], 

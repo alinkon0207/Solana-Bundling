@@ -6,7 +6,6 @@ import {
     PublicKey,
     sendAndConfirmTransaction
 } from "@solana/web3.js";
-
 import {
     TOKEN_PROGRAM_ID,
     MINT_SIZE,
@@ -16,30 +15,27 @@ import {
     AuthorityType,
     getMinimumBalanceForRentExemptMint,
     getOrCreateAssociatedTokenAccount,
-    createMint,
+    getMint,
 } from "@solana/spl-token";
-
 import {
     Metaplex,
     bundlrStorage,
     keypairIdentity,
     toMetaplexFile,
 } from "@metaplex-foundation/js";
-
 import {
     DataV2,
     createCreateMetadataAccountV3Instruction,
     PROGRAM_ID
 } from "@metaplex-foundation/mpl-token-metadata";
-
 import { 
     Market 
 } from "@project-serum/serum";
-
 import { 
     Token,
     MarketV2,
-    Liquidity
+    Liquidity, 
+    buildSimpleTransaction,
 } from "@raydium-io/raydium-sdk";
 
 import {
@@ -50,15 +46,15 @@ import {
     WALLET,
     makeTxVersion,
     PROGRAMIDS,
-    DEFAULT_TOKEN
+    addLookupTableInfo
 } from "./config";
-
 import {
     generateExplorerTxUrl,
     sleep,
     mySendAndConfirmTransaction,
     myBuildSendAndConfirmTxs,
-    getWalletTokenAccounts
+    getWalletTokenAccounts, 
+    mySendAndConfirmTxs
 } from "./utils";
 
 import * as fs from "fs";
@@ -224,7 +220,7 @@ const createOpenBookMarket = async (mint: PublicKey, decimals: number, minOrderS
     console.log(`Creating OpenBook market with mint: ${mint}`);
 
     const baseToken = new Token(TOKEN_PROGRAM_ID, mint, decimals);
-    const quoteToken = DEFAULT_TOKEN.WSOL;
+    const quoteToken = Token.WSOL;
 
     const { innerTransactions, address } = await MarketV2.makeCreateMarketInstructionSimple({
         connection,
@@ -313,11 +309,12 @@ export const createToken = async (
 }
 
 
-export const createPool = async(mint: PublicKey, decimals: number, tokenAmount: bigint, solAmount: bigint) => {
-    console.log(`Creating pool with mint: ${mint} tokenAmount: ${tokenAmount} solAmount: ${solAmount}`);
+export const createPool = async(baseMint: PublicKey, baseTokenAmount: bigint, solAmount: bigint) => {
+    console.log(`Creating pool with baseMint: ${baseMint} baseTokenAmount: ${baseTokenAmount} solAmount: ${solAmount}`);
 
-    const baseToken = new Token(TOKEN_PROGRAM_ID, mint, decimals);
-    const quoteToken = DEFAULT_TOKEN.WSOL;
+    const baseMintInfo = await getMint(connection, baseMint);
+    const baseToken = new Token(TOKEN_PROGRAM_ID, baseMint, baseMintInfo.decimals);
+    const quoteToken = Token.WSOL;
 
     const accounts = await Market.findAccountsByMints(connection, baseToken.mint, quoteToken.mint, PROGRAMIDS.OPENBOOK_MARKET);
     if (accounts.length === 0) {
@@ -327,7 +324,7 @@ export const createPool = async(mint: PublicKey, decimals: number, tokenAmount: 
     const marketId = accounts[0].publicKey;
 
     const startTime = Math.floor(Date.now() / 1000);
-    const baseAmount = tokenAmount * BigInt(10 ** baseToken.decimals);
+    const baseAmount = baseTokenAmount * BigInt(10 ** baseToken.decimals);
     const quoteAmount = solAmount * BigInt(10 ** quoteToken.decimals);
     const walletTokenAccounts = await getWalletTokenAccounts(connection, WALLET.publicKey);
 
@@ -356,12 +353,21 @@ export const createPool = async(mint: PublicKey, decimals: number, tokenAmount: 
             new PublicKey(isMainNet ? "7YttLkHDoNj9wyDur5pM1ejNaAvT9X4eqaYcHQqtj2G5" : "3XMrhbv989VxAMi3DErLV9eJht1pHppW5LbKxe9fkEFR")
     });
 
-    const createPoolSigs = await myBuildSendAndConfirmTxs(innerTransactions);
+    const willSendTx = await buildSimpleTransaction({
+        makeTxVersion,
+        payer: payer.publicKey,
+        connection,
+        innerTransactions: innerTransactions,
+        addLookupTableInfo: addLookupTableInfo,
+    });
+    // console.log("  willSendTx:", willSendTx)
+
+    const createPoolSigs = await mySendAndConfirmTxs(connection, WALLET, willSendTx);
     if (createPoolSigs.length === 0) {
         console.error("  Failed to create pool");
         return null;
     }
-    console.log("  CreatePoolSigs:", createPoolSigs);
+    console.log("  createPoolSigs:", createPoolSigs);
 
     return address.ammId;
 }

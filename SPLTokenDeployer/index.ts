@@ -1,8 +1,25 @@
 
-import { 
-    WALLET
-} from "./config";
+import { PublicKey } from "@solana/web3.js";
+import {
+    Token, 
+    TokenAmount, 
+    TOKEN_PROGRAM_ID
+} from "@raydium-io/raydium-sdk";
+import * as readline from "readline";
+
+import { WALLET } from "./config";
 import { createToken, createPool } from "./create";
+import { swap } from "./swap";
+import { sleep } from "./utils";
+
+
+let userInput = "";
+
+// Create readline interface
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
 
 
 const main = async () => {
@@ -22,16 +39,41 @@ const main = async () => {
         TOKEN_DESCRIPTION,
         WALLET.publicKey,
         WALLET.publicKey
-    );
+    )  /* new PublicKey("8XywVKwNemJnGwMowxx1WbRgJp2Lg3FXibkTdWBPNFUR") */;
     if (tokenMint === null) {
         return;
     }
 
-    // const ammId = await createPool(tokenMint, DECIMALS, BigInt(TOTAL_SUPPLY * 8 / 10), BigInt(1));
-    // if (ammId === null) {
-    //     return;
-    // }
-    // console.log("  AMM ID:", ammId?.toBase58());
+    const ammId = await createPool(tokenMint, BigInt(TOTAL_SUPPLY * 8 / 10), BigInt(1));
+    if (ammId === null) {
+        return;
+    }
+    console.log("  AMM ID:", ammId?.toBase58());
+
+    console.log();
+    console.log();
+
+
+    // Listen for user input
+    rl.on("line", (input) => {
+        userInput = input;
+    });
+
+    while (true) {
+        try {
+            if (userInput === "stop") {
+                process.exit(0);
+            } else if (userInput === "buy") {
+                console.log("buying tokens...");
+                const inputTokenAmount = new TokenAmount(Token.WSOL, BigInt(0.1 * (10 ** 9)));
+                const outputToken = new Token(TOKEN_PROGRAM_ID, tokenMint, DECIMALS);
+                await swap(inputTokenAmount, outputToken);
+            }
+        } catch (err) {
+        }
+
+        await sleep(3000);
+    }
 }
 
 main();

@@ -43,6 +43,7 @@ export const WALLET = Keypair.fromSecretKey(bs58.decode(OWNER_PRIV_KEY));
 export const payer = WALLET;
 export const mintAuthority = WALLET;
 export const updateAuthority = WALLET;
+export const buyerOrSeller = WALLET;
 
 export const makeTxVersion = TxVersion.V0; // LEGACY
 
