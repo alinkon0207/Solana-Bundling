@@ -16,7 +16,6 @@ import {
     connection, 
     buyerOrSeller, 
     payer, 
-    WALLET, 
     PROGRAMIDS, 
     makeTxVersion,
     addLookupTableInfo
@@ -27,9 +26,9 @@ import {
 } from "./utils";
 
 
-export const swap = async (inputTokenAmount: TokenAmount, outputToken: Token) => {
-    const baseToken = outputToken;
-    const quoteToken = inputTokenAmount.token;
+export const swap = async (inputTokenAmount: TokenAmount, outputToken: Token, isBuy: boolean) => {
+    const baseToken = isBuy ? outputToken : inputTokenAmount.token;
+    const quoteToken = isBuy ? inputTokenAmount.token : outputToken;
     const walletTokenAccounts = await getWalletTokenAccounts(connection, buyerOrSeller.publicKey);
 
     const slippage = new Percent(1, 100);
@@ -97,7 +96,7 @@ export const swap = async (inputTokenAmount: TokenAmount, outputToken: Token) =>
         poolKeys: poolKeys2,
         userKeys: {
             tokenAccounts: walletTokenAccounts,
-            owner: WALLET.publicKey,
+            owner: buyerOrSeller.publicKey,
         },
         amountIn: inputTokenAmount,
         amountOut: minAmountOut,

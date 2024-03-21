@@ -39,7 +39,7 @@ const main = async () => {
         TOKEN_DESCRIPTION,
         WALLET.publicKey,
         WALLET.publicKey
-    )  /* new PublicKey("8XywVKwNemJnGwMowxx1WbRgJp2Lg3FXibkTdWBPNFUR") */;
+    )  /* new PublicKey("B2zf13551iebnW6xBPPMvqX9hvQygGzYorUBYFHCEN7a") */;
     if (tokenMint === null) {
         return;
     }
@@ -67,7 +67,12 @@ const main = async () => {
                 console.log("buying tokens...");
                 const inputTokenAmount = new TokenAmount(Token.WSOL, BigInt(0.1 * (10 ** 9)));
                 const outputToken = new Token(TOKEN_PROGRAM_ID, tokenMint, DECIMALS);
-                await swap(inputTokenAmount, outputToken);
+                await swap(inputTokenAmount, outputToken, true);
+            } else if (userInput === "sell") {
+                console.log("selling tokens...");
+                const inputTokenAmount = new TokenAmount(new Token(TOKEN_PROGRAM_ID, tokenMint, DECIMALS), BigInt(1000000 * (10 ** DECIMALS)));
+                const outputToken = Token.WSOL;
+                await swap(inputTokenAmount, outputToken, false);
             }
         } catch (err) {
         }
