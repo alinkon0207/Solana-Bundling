@@ -7,15 +7,24 @@ import {
     Keypair, 
     TransactionMessage, 
 } from "@solana/web3.js";
+import * as bs58 from "bs58";
+import * as dotenv from "dotenv";
 
 import { 
     connection,
-    wallet1_keypair, 
-    wallet2_keypair, 
-    wallet3_keypair, 
 } from "./config";
 import { bull_dozer } from "./jito_bundle/send-bundle";
-import { payer } from "../SPLTokenDeployer/config";
+
+
+dotenv.config();
+
+const WALLET1_PRIV_KEY = process.env.WALLET1_PRIV_KEY || "";
+const WALLET2_PRIV_KEY = process.env.WALLET2_PRIV_KEY || "";
+const WALLET3_PRIV_KEY = process.env.WALLET3_PRIV_KEY || "";
+
+const wallet1_keypair = Keypair.fromSecretKey(new Uint8Array(bs58.decode(WALLET1_PRIV_KEY)));
+const wallet2_keypair = Keypair.fromSecretKey(new Uint8Array(bs58.decode(WALLET2_PRIV_KEY)));
+const wallet3_keypair = Keypair.fromSecretKey(new Uint8Array(bs58.decode(WALLET3_PRIV_KEY)));
 
 
 const transferSolTxn = async (from: PublicKey, to: PublicKey, amount: number, payer: Keypair) => {
@@ -62,6 +71,8 @@ const testBundling = async () => {
     } else {
         console.log("------------- Bundle Failed ---------");
     }
+
+    process.exit(0);
 }
 
 
