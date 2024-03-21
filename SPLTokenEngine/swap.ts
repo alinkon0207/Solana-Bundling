@@ -106,9 +106,9 @@ export const swap = async (inputTokenAmount: TokenAmount, outputToken: Token) =>
     });
 
     const transactions = await buildSimpleTransaction({
+        connection: connection,
         makeTxVersion: makeTxVersion,
         payer: payer.publicKey,
-        connection: connection,
         innerTransactions: innerTransactions,
         addLookupTableInfo: addLookupTableInfo,
     });
