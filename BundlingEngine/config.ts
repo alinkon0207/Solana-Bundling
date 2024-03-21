@@ -34,7 +34,3 @@ export const lookupTableCache = {};
 export const connection = new Connection(RPC_HTTPS_URL, "confirmed");
 export const makeTxVersion = TxVersion.V0; // LEGACY
 export const addLookupTableInfo = undefined; // only mainnet, else undefined
-
-
-export const delay_pool_open_time = Number(0); // don't change it because then you wont be able to perform swap in bundle.
-export const sell_remove_fees = 5000000;
