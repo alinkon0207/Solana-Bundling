@@ -11,17 +11,9 @@ import {
 } from '@solana/web3.js';
 
 import {
-    buildSimpleTransaction,
-    InnerSimpleV0Transaction,
     TOKEN_PROGRAM_ID,
     SPL_ACCOUNT_LAYOUT
 } from '@raydium-io/raydium-sdk';
-
-import {
-    connection,
-    makeTxVersion,
-    addLookupTableInfo,
-} from './config';
 
 
 export async function sleep(ms: number): Promise<void> {
@@ -159,7 +151,7 @@ export async function mySendAndConfirmTransaction(
 }
 
 
-async function mySendAndConfirmTxs(
+export async function mySendAndConfirmTxs(
     connection: Connection,
     payer: Keypair | Signer,
     txs: (VersionedTransaction | Transaction)[],
