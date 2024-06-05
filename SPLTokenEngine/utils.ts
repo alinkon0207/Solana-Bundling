@@ -134,7 +134,6 @@ export const mySendTransaction = async (
     while (retries > 0) {
         try {
             const signature = await connection.sendRawTransaction(rawTransaction, {
-                skipPreflight: true,
                 maxRetries: 0,
             });
 
